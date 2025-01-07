@@ -1,21 +1,24 @@
-export const createEventEmitter = (value) => {
+const createEventEmitter = value => {
   let handlers = [];
 
-  const on = (handler) => handlers.push(handler);
-  const off = (handler) => {
-    handlers = handlers.filter((h) => h !== handler);
-  };
+  const on = handler => handlers.push(handler)
+  const off = handler => {
+    handlers = handler.filter(h=> h !== handler)
+  }
 
   const get = () => value;
-  const set = (newValue) => {
+  const set = newValue => {
     value = newValue;
-    handlers.forEach((handler) => handler(value));
-  };
+    handlers.forEach(handler => handler(value));
+  }
 
   return {
     on,
     off,
     get,
-    set,
-  };
-};
+    set
+  }
+}
+
+export default createEventEmitter
+

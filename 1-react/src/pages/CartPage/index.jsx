@@ -1,72 +1,59 @@
-import React from "react";
-import ProductApi from "shared/api/ProductApi";
-import OrderApi from "shared/api/OrderApi";
-import Page from "../../components/Page";
-import ProductItem from "../../components/ProductItem";
-import Title from "../../components/Title";
-import ErrorDialog from "../../components/ErrorDialog";
-import * as MyRouter from "../../lib/MyRouter";
-import * as MyLayout from "../../lib/MyLayout";
-import OrderForm from "./OrderForm";
-import PaymentButton from "./PaymentButton";
-import PaymentSuccessDialog from "./PaymentSuccessDialog";
+import Page from "../../components/Page"
+import Title from "../../components/Title"
+import PaymentButton from "./PaymentButton"
+import ProductItem from "../../components/ProductItem"
+import OrderForm from "./OrderForm"
+import React from "react"
+import ProductApi from 'shared/api/ProductApi'
 
-class CartPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { product: null };
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
 
-  async componentDidMount() {
-    this.fetch();
-  }
+ class CartPage extends React.Component{
+   constructor(props){
+     super(props)
+     this.state = {
+       product : null
+     }
+   }
 
-  async fetch() {
-    const { startLoading, finishLoading, openDialog } = this.props;
-    const { productId } = this.props.params();
-    if (!productId) return;
+   async fetch(){
+     try {
+        const product = await ProductApi.fetchProduct("CACDA422")
+        this.setState({product})
+     } catch(e){
+       console.error(e)
+     }
+   }
 
-    startLoading("장바구니에 담는중...");
-    try {
-      const product = await ProductApi.fetchProduct(productId);
-      this.setState({ product });
-    } catch (e) {
-      openDialog(<ErrorDialog />);
-      return
-    }
-    finishLoading();
-  }
+   componentDidMount(){
+     this.fetch()
 
-  async handleSubmit(values) {
-    const { startLoading, finishLoading, openDialog } = this.props;
+   }
 
-    startLoading("결제중...");
-    try {
-      await OrderApi.createOrder(values);
-    } catch (e) {
-      openDialog(<ErrorDialog />);
-      return;
-    }
-    finishLoading();
+   
+   render(){
+     const {product} = this.state
+     
+      return (
+        <div className="CartPage">
+          <Page
+            header={<Title backUrl="/">장바구니</Title>}
+            footer={<PaymentButton />}
+          >
+            {product && (
+            <ProductItem product={product} />
+            )}
 
-    openDialog(<PaymentSuccessDialog />);
-  }
+        
+           <OrderForm/>
+            </Page>
 
-  render() {
-    const { product } = this.state;
-    return (
-      <div className="CartPage">
-        <Page
-          header={<Title backUrl="/">장바구니</Title>}
-          footer={<PaymentButton />}
-        >
-          {product && <ProductItem product={product} />}
-          <OrderForm onSubmit={this.handleSubmit} />
-        </Page>
-      </div>
-    );
-  }
+          
+        </div>
+      )
+   }
+
 }
 
-export default MyLayout.withLayout(MyRouter.withRouter(CartPage));
+
+
+export default CartPage

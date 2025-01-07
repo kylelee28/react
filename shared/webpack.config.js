@@ -18,6 +18,8 @@ module.exports = {
     static: path.resolve(__dirname, "public"),
     port: process.env.PORT,
     historyApiFallback: true,
+    allowedHosts: "all",
+    hot: true,
   },
   module: {
     rules: [
@@ -26,6 +28,7 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
+
         },
       },
     ],
