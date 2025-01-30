@@ -5,49 +5,51 @@ import Navbar from "../../components/Navbar"
 import React from "react"
 import Title from "../../components/Title"
 import FormControl from "../../components/FormControl"
+import * as MyLayout from "../../lib/MyLayout"
+import ErrorDialog from "../../components/ErrorDialog"
 
 
-class ProductPage extends React.Component {
-  //props는 왜??
-  constructor(props){
-    super(props)
-    this.state = {
-      productList : [],
-    }
-  }
+const ProductPage = () => {
+  const {startLoading, finishLoading} = MyLayout.useLoading()
+  const {openDialog, closeDialog} = MyLayout.useDialog();
 
-  async fetch(){
+  
+  const [productList, setProductList] = React.useState([])
+
+  const fetch = async () => {
+    startLoading("메뉴 목록 로딩중");
     try{
       const productList = await ProductApi.fetchProductList() 
-      this.setState({productList})
+      setProductList(productList)
     } catch(e){
-      console.error(e)
-    }
-  }
 
-  componentDidMount(){
-    this.fetch()
-  }
+      openDialog(<ErrorDialog/>)
+      return ; 
+    }
+    finishLoading();
+  } 
+
+  React.useEffect(()=> {
+    fetch();
+  }, [])
+  console.log(productList)
+
   
-  render(){
   return (
     <div className="ProductPage">
       <Page header = {<Title>메뉴 목록</Title>} footer = {<Navbar/>}>
           <ul>
-            {this.state.productList.map(product => (
+            {productList.map(product => (
               <li key = {product.id}>
                 <OrderableProductItem product={product}/>
               </li>
             ))}
-         
+
           </ul>
-        
+
       </Page>
 
       </div>
   )
 }
-
-}
-
 export default ProductPage

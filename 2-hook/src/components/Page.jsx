@@ -1,12 +1,13 @@
 import * as MyLayout from "../lib/MyLayout";
 
-const Page = ({ header, children, footer }) => (
+const Page = ({header, children, footer}) => (
+
   <div className="Page">
     <header>{header}</header>
     <main>{children}</main>
     <footer>{footer}</footer>
-    <MyLayout.DialogContainer />
+    <MyLayout.DialogContainer/>
   </div>
-);
+  );
 
-export default Page;
+export default Page

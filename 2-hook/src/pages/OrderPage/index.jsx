@@ -1,56 +1,52 @@
-import React from "react";
-import OrderApi from "shared/api/OrderApi";
-import * as MyLayout from "../../lib/MyLayout";
-import Page from "../../components/Page";
-import Title from "../../components/Title";
-import Navbar from "../../components/Navbar";
-import ErrorDialog from "../../components/ErrorDialog";
-import OrderStatusCard from "./OrderStatusCard";
-import OrderPaymentCard from "./OrderPaymentCard";
-import OrderDeliveryCard from "./OrderDeliveryCard";
+import Navbar from "../../components/Navbar"
+import Page from "../../components/Page"
+import Title from "../../components/Title"
+import OrderApi from 'shared/api/OrderApi'
+import React from "react"
+import OrderDeliveryCard from "./OrderDeliveryCard"
+import OrderPaymentCard from "./OrderPaymentCard"
+import OrderStatusCard from "./OrderStatusCard"
+import * as MyLayout from "../../lib/MyLayout"
+import ErrorDialog from "../../components/ErrorDialog"
 
 const OrderPage = () => {
+
   const [order, setOrder] = React.useState();
-  const { startLoading, finishLoading } = MyLayout.useLoading();
-  const { openDialog } = MyLayout.useDialog();
-
+    const {openDialog} = MyLayout.useDialog();
+    const {startLoading, finishLoading} = MyLayout.useLoading();
+    
   const fetch = async () => {
-    startLoading("주문 정보 로딩중...");
-    try {
-      const order = await OrderApi.fetchMyOrder();
-      setOrder(order);
-    } catch (e) {
-      openDialog(<ErrorDialog />);
-      return;
+      startLoading("주문 정보 로딩중")
+        try {
+            const order = await OrderApi.fetchMyOrder()
+            setOrder(order)
+        } catch(e){
+            openDialog(<ErrorDialog/>)
+            //gpt에게 질문
+            return;
+        }
+        finishLoading();
+      
     }
-    finishLoading();
-  };
+    React.useEffect(() => {
+        fetch()
+    }, [])
 
-  React.useEffect(() => {
-    fetch();
-  }, []);
+    return (
+         <div className="OrderPage">
+            <Page header = {<Title>주문내역</Title>} footer={<Navbar/>}> 
 
-  React.useEffect(() => {
-    const timer = setInterval(async () => {
-      const order = await OrderApi.fetchMyOrder();
-      setOrder(order);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
 
-  return (
-    <div className="OrderPage">
-      <Page header={<Title>주문내역</Title>} footer={<Navbar />}>
-        {order && (
-          <>
-            <OrderStatusCard order={order} />
-            <OrderPaymentCard order={order} />
-            <OrderDeliveryCard order={order} />
-          </>
-        )}
-      </Page>
-    </div>
-  );
-};
+                    {order && (
+              <>
+                     <OrderStatusCard order= {order}/> <OrderPaymentCard order= {order}/> <OrderDeliveryCard order = {order}/>
+              </>
+                    )}
+              </Page>
+          </div>
+    )
+}
 
-export default OrderPage;
+
+
+export default OrderPage

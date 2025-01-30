@@ -1,3 +1,3 @@
-const Backdrop = ({ children }) => <div className="Backdrop">{children}</div>;
+const Backdrop = ({children}) => <div className="Backdrop">{children}</div>
 
-export default Backdrop;
+export default Backdrop

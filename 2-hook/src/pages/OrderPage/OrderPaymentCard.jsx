@@ -1,39 +1,37 @@
-import Card from "../../components/Card";
+//총결제금액:totalPrice
+//결제방법:paymentMethod
 
-const OrderPaymentCard = ({ order }) => {
-  const {
-    totalPrice,
-    paymentMethod,
-    productPrice,
-    deliveryPrice,
-    discountPrice,
-  } = order;
+//productPrice
+//deliveryPrice
+//discountPrice
+import Card from "../../components/Card"
 
-  return (
-    <Card
-      header={
+const OrderPaymentCard = (({order}) => {
+
+  const {totalPrice, paymentMethod, productPrice, deliveryPrice, discountPrice} = order
+
+
+  const data = [
+    {"term" : "메뉴가격", "description": productPrice},
+    {"term" : "배달료", "description" : deliveryPrice},
+    {"term" : "할인 가격", "description" : discountPrice},
+
+]
+
+    return(
+      <Card header = {
         <>
-          총 결제금액: {totalPrice.toLocaleString()}원
-          <br />
-          결제 방법: {paymentMethod}
-        </>
-      }
-      data={[
-        {
-          term: "메뉴가격",
-          description: <>{productPrice.toLocaleString()}원</>,
-        },
-        {
-          term: "배달료",
-          description: <>{deliveryPrice.toLocaleString()}원</>,
-        },
-        {
-          term: "할인금액",
-          description: <>{discountPrice.toLocaleString()}원</>,
-        },
-      ]}
-    />
-  );
-};
+          {/* 총 결제 금액 : `${totalPrice}`<br/>결제 방법 : `${paymentMethod}` */}
 
-export default OrderPaymentCard;
+     총 결제 금액 : {totalPrice.toLocaleString()} <br/>결제 방법 : {paymentMethod}
+
+          
+      </>} 
+        
+        data = {data}/>
+    )
+}
+
+)
+
+export default OrderPaymentCard
