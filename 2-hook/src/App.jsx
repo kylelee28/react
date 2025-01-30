@@ -4,11 +4,10 @@ import OrderPage from "./pages/OrderPage"
 
 import MyReact from "./lib/MyReact"
 import React from "react"
+import * as MyForm from "./lib/MyForm"
 
 import * as MyRouter from "./lib/MyRouter"
 import * as MyLayout from "./lib/MyLayout";
-
-
 
 const App = () => (
      <MyLayout.Layout>
@@ -24,21 +23,6 @@ const App = () => (
 // export default App
 
 const LoginForm = () => {
-  const [values, setValues] = React.useState({
-    email : "",
-    password : "",
-  })
-
-  const [errors, setErrors] = React.useState({
-    email : "",
-    password : ""
-  })
-
-  const [touched, setTouched] = React.useState({
-    email : false,
-    password : false,
-  })
-
   const validate = values => {
     const errors = {
       email : "",
@@ -55,35 +39,12 @@ const LoginForm = () => {
     return errors
   }
 
-  const handleChange = e => {
-    setValues({
-      ...values, 
-      [e.target.name] : e.target.value
-    })
-  }
 
-  const handleBlur = e => {
-    setTouched({
-      ...touched,
-      [e.target.name] : true
-    })
-  }
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    const errors = validate(values)
-    setErrors(errors)
-    const nextTouched = {
-      email : true,
-      password : true
-    }
-
-    setTouched(nextTouched)
-    if(Object.values(errors).some(Boolean)) return
-
-    console.log("submitted", values)
-  }
-
+const {values, touched, errors, handleChange, handleBlur, handleSubmit} = MyForm.useForm({
+  initialValues : {email : "", password : ""}, validate, onSubmit : (values) => {
+      console.log("Submitted", values) }
+})
+  
   return (
     <form noValidate onSubmit={handleSubmit}>
       <input type = "text" 
@@ -92,8 +53,8 @@ const LoginForm = () => {
         value={values.email} 
         onChange={handleChange}
         onBlur = {handleBlur}/>
-        {touched.email && errors.email && <span>{errors.email}</span> }
-      
+        {touched.email && errors.email && <span>{errors.email} </span> }
+
   <input type = "password" 
     name ="password" 
     placeholder="Password" 
@@ -102,10 +63,13 @@ const LoginForm = () => {
     onBlur = {handleBlur}/>
       {touched.password && errors.password && <span>{errors.password}</span> }
       <button>Login</button>
-      
+
      </form>
   )
-}
+
+  }
+
+  
 export default LoginForm
 
 
